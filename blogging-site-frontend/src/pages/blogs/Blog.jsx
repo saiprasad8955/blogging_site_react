@@ -64,11 +64,11 @@ const Blog = () => {
                 </div>
             }
 
-            <div className=" p-10 m-2  border-amber-500 overflow-x-auto">
+            <div className=" p-5 m-2  border-amber-500 overflow-x-auto">
                 {
                     isLoading ?
                         <Skeleton animation="wave" variant="rectangular" style={{ width: '100%', height: '200px' }} /> :
-                        <table className="table-auto text-left border-collapse bg-white shadow-md w-full ">
+                        <table className="table-auto text-left border-collapse bg-white shadow-md w-[100%] ">
                             <thead>
                                 <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
                                     <th className="px-4 py-2 border-b">#</th>
