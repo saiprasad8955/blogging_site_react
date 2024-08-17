@@ -64,7 +64,7 @@ const Blog = () => {
                 </div>
             }
 
-            <div className=" p-10 m-2  border-amber-500">
+            <div className=" p-10 m-2  border-amber-500 overflow-x-auto">
                 {
                     isLoading ?
                         <Skeleton animation="wave" variant="rectangular" style={{ width: '100%', height: '200px' }} /> :
