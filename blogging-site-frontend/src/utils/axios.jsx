@@ -2,7 +2,7 @@ import axios from 'axios';
 // config
 // ----------------------------------------------------------------------
 
-const axiosInstance = axios.create({ baseURL: 'http://localhost:3000' });
+const axiosInstance = axios.create({ baseURL: window.location.origin });
 
 axiosInstance.interceptors.response.use(
     (res) => res,
