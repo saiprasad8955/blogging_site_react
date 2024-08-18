@@ -1,12 +1,12 @@
-import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Switch, TextField } from '@mui/material';
+import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom'
 import axiosInstance, { endpoints } from '../../utils/axios';
-import { useSnackbar } from '../../components/snackbar';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useSnackbar } from '../../components/Snackbar';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 
 // Validation schema using yup
 const validationSchema = yup.object().shape({
@@ -86,7 +86,7 @@ const BlogForm = () => {
 
             if (response.data.status) {
                 enqueueSnackbar(action === 'add' ? 'Blog added successfully!' : 'Blog updated successfully!');
-                navigate(-1);
+                navigate('/blog');
             }
         } catch (err) {
             enqueueSnackbar(err.error || 'Something went wrong!', { variant: 'error' });
@@ -94,17 +94,23 @@ const BlogForm = () => {
     };
 
     return (
-        <div className='flex  items-center h-screen flex-col'>
-            <div className='blog-page-header flex justify-start items-center w-full gap-x-10'>
-                <div>
-                    <IconButton onClick={() => navigate(-1)}>
-                        <ArrowBackIcon />
-                    </IconButton>
-                </div>
+        <div className='h-screen'>
 
-                <h1 className='text-2xl my-10 font-bold'>{action === 'add' ? 'Create Blog' : 'Update Blog'}</h1>
+            <div className='blog-page-header '>
+                <CustomBreadcrumbs
+                    heading={action === 'add' ? 'Create Blog' : 'Update Blog'}
+                    links={[
+                        { name: 'Home', href: '/home' },
+                        { name: 'Blog', href: '/blog' },
+                        { name: action === 'add' ? 'Create' : 'Update' },
+                    ]}
+                    sx={{
+                        mb: { xs: 3, md: 5 },
+                    }}
+                />
             </div>
-            <Grid className='blog-form' spacing={2} style={{ width: '50%', mt: 2 }} container>
+
+            <Grid className='blog-form flex items-center' spacing={2} sx={{ mt: 3 }} container>
                 <Grid item xs={12} md={6}>
                     <TextFieldComponent name="title" control={control} label="Title" required />
                 </Grid>
@@ -153,7 +159,7 @@ const BlogForm = () => {
                     >
                         {action === 'add' ? 'ADD BLOG' : 'UPDATE BLOG'}
                     </LoadingButton>
-                    <Button variant='contained' sx={{ borderRadius: '10px' }} color='error' onClick={() => { navigate(-1) }}>CANCEL</Button>
+                    {/* <Button variant='contained' sx={{ borderRadius: '10px' }} color='error' onClick={() => { navigate(-1) }}>CANCEL</Button> */}
                 </Grid>
 
             </Grid>

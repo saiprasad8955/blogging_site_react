@@ -25,9 +25,9 @@ const port = process.env.PORT || 3000;
 const start = async () => {
   try {
     // console.log(process.env.MONGO_URI)
-    await connectDB("mongodb+srv://Sai0047:rXxgqYKPqwnhcXX7@cluster0.qptsw.mongodb.net/Blogging_Site_Project_1");
+    await connectDB(process.env.MONGO_URI);
     app.listen(port || 3000, function () {
-      console.log(`Express app running on port ${port}...`);
+      console.log(`Express app running on port http://localhost:${port}/`);
     });
   } catch (error) {
     console.log(error);

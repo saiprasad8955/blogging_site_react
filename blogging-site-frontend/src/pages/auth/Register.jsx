@@ -17,7 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Link, useNavigate } from 'react-router-dom';
 import Iconify from '../../components/Iconify';
 import useAuthContext from '../../auth/hook/use-context-hook';
-import { useSnackbar } from '../../components/snackbar';
+import { useSnackbar } from '../../components/Snackbar';
 import RegisterImage from '../../assets/register.jpg';
 
 // Define the validation schema with Yup

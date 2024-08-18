@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --primary-font: 'Public Sans', sans-serif;
+  }
+  
+  body {
+    font-family: var(--primary-font);
+  }
+  

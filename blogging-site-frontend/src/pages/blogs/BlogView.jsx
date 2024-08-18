@@ -1,46 +1,54 @@
 // src/pages/BlogDetail.jsx
 import useSWR from 'swr';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { endpoints, fetcher } from '../../utils/axios';
-import { Chip, IconButton } from '@mui/material';
+import { Button, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+import Iconify from '../../components/Iconify';
 
 const BlogView = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
 
     const URL = `${endpoints.blog.details}/${id}`;
 
-    const { data, error } = useSWR(URL, fetcher);
+    const { data, error, isLoading } = useSWR(URL, fetcher);
 
     const blog = data ? data.data : {};
 
     const renderBackButton = () => (
         <div className="mb-4">
-            <IconButton onClick={() => navigate(-1)}>
-                <ArrowBackIcon />
-            </IconButton>
+            <CustomBreadcrumbs
+                heading="Blog Details"
+                links={[
+                    { name: 'Home', href: '/home' },
+                    { name: 'Blog', href: '/blog' },
+                    { name: 'View' },
+                ]}
+                sx={{
+                    mb: { xs: 3, md: 5 },
+                }}
+            />
         </div>
     );
 
     const renderContent = () => {
         if (error) {
             return (
-                <div className="text-center p-6 bg-white rounded-lg shadow-md">
+                <div className="text-center p-6 ">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">No Blog Found</h2>
                     <p className="text-gray-600">The blog you are looking for does not exist or has been removed. Please check the URL or try again later.</p>
                 </div>
             );
         }
 
-        if (!data) {
-            return <p className="text-gray-600 text-lg">Loading...</p>;
+        if (isLoading) {
+            return <p className="text-gray-600 text-lg text-center">Loading...</p>;
         }
 
         return (
-            <>
+            <div className='h-full'>
                 <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
 
                 <div className="text-gray-600 mb-4">
@@ -78,15 +86,16 @@ const BlogView = () => {
                     </div>
                 </div>
 
-                <div className="prose prose-sm max-w-full">
+                <div className="max-w-full h-[100px] overflow-y-auto ">
+                    <span className="font-semibold">Body:</span>
                     <p>{blog.body}</p>
                 </div>
-            </>
+            </div>
         );
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6 mt-4 bg-white rounded-lg shadow-lg">
+        <div className="overflow-y-auto h-full">
             {renderBackButton()}
             {renderContent()}
         </div>

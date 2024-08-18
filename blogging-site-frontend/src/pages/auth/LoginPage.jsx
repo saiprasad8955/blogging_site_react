@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import Iconify from '../../components/Iconify';
 import useAuthContext from '../../auth/hook/use-context-hook';
-import { useSnackbar } from '../../components/snackbar';
+import { useSnackbar } from '../../components/Snackbar';
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 

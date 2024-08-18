@@ -116,7 +116,7 @@ const updateBlogs = async (req, res) => {
   try {
 
     let blog = req.body;
-    const { title, body, tags, subcategory, isPublished } = blog
+    const { title, body, tags, subcategory, category, isPublished } = blog
 
     //  check the blog data coming or not
     if (!isValidBody(blog)) {
@@ -144,6 +144,7 @@ const updateBlogs = async (req, res) => {
 
     blogData.title = title;
     blogData.tags = tags;
+    blogData.category = category;
     blogData.body = body;
     blogData.subcategory = subcategory;
 
@@ -164,6 +165,7 @@ const deleteBlog = async (req, res) => {
 
     // Extract Blog id From Path params
     let blogId = req.params.blogId;
+    console.log("🚀 ~ deleteBlog ~ blogId:", blogId)
 
     // find blog data
     let blogData = await blogModels.findById(blogId);

@@ -34,6 +34,6 @@ export const endpoints = {
         list: '/getBlogs',
         update: '/UpdateBlogs',
         delete: '/deleteBlogsById',
-        details: '/blog'
+        details: '/deleteBlogsById'
     }
 };

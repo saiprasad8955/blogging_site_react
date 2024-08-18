@@ -1,36 +1,45 @@
-import useSWR from 'swr';
-import useAuthContext from "../../auth/hook/use-context-hook"
+import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom"
-import { endpoints, fetcher } from "../../utils/axios";
-import CircularProgress from '@mui/material/CircularProgress';
-import { Backdrop, Button, Chip, IconButton, Skeleton } from "@mui/material";
+import { Button, Chip, IconButton, Skeleton } from "@mui/material";
+import axiosInstance, { endpoints, fetcher } from "../../utils/axios";
+import { ConfirmDialog } from '../../components/custom-dialog';
+import useSWR, { mutate } from 'swr';
+import useAuthContext from "../../auth/hook/use-context-hook"
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+import Iconify from '../../components/Iconify';
+import { useSnackbar } from '../../components/Snackbar';
 
 
 const Blog = () => {
     let { user } = useAuthContext();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [idToDelete, setIdToDelete] = useState('');
 
     const navigate = useNavigate();
 
     const URL = `${endpoints.blog.list}?authorId=${user?._id}`;
 
-    const { data, isLoading } = useSWR(URL, fetcher);
+    const { data, isLoading, error } = useSWR(URL, fetcher);
 
-    const blogList = isLoading === false ? data.data : [];
+    const blogList = !error ? data?.data : [];
 
 
     const handleAdd = () => {
         navigate('/blog/add')
     };
 
-    const handleDelete = () => {
+    const handleDelete = (id) => {
+        setDeleteDialog(true);
+        setIdToDelete(id);
     };
 
     const handleUpdate = (blog) => {
-        console.log("🚀 ~ handleUpdate ~ blog:", blog)
         navigate('/blog/update', { state: blog })
     };
 
@@ -39,32 +48,44 @@ const Blog = () => {
         return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
     };
 
+    const onDelete = async () => {
+        const url = `${endpoints.blog.delete}/${idToDelete}`;
+        try {
+            const response = await axiosInstance.delete(url)
+            console.log("🚀 ~ onDelete ~ response:", response)
+            if (response.data.message) {
+                enqueueSnackbar('Delete success!.');
+                // Trigger re-fetch of the blog list
+                mutate(URL);
+                setDeleteDialog(false);
+            }
+        } catch (err) {
+            console.log(err)
+            enqueueSnackbar(err.error || 'Something went wrong!', { variant: 'error' });
+            setDeleteDialog(false);
+        }
+    }
 
     return (
-        <div>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={isLoading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
-
-            <div className="Heading mx-12 flex justify-between items-center">
-                <h1 className=" m-2 p-2  text-slate-800 font-extrabold text-6xl">Blog List</h1>
-                <div>
-                    <Button variant='contained' onClick={handleAdd} sx={{ borderRadius: '10px' }} color='success' >Add Blog</Button>
-                </div>
+        <div className='overflow-y-auto h-full'>
+            <div className="Heading flex justify-between items-center ">
+                <CustomBreadcrumbs
+                    heading="Blog List"
+                    links={[
+                        { name: 'Home', href: '/home' },
+                        { name: 'Blog', href: '/blog' },
+                        { name: 'List' },
+                    ]}
+                    action={
+                        <Button variant='contained' onClick={handleAdd} startIcon={<Iconify icon="mingcute:add-line" />} sx={{ borderRadius: '10px' }}  >Add Blog</Button>
+                    }
+                    sx={{
+                        mb: { xs: 3, md: 5 },
+                    }}
+                />
             </div>
-            {
-                blogList.length &&
-                <div className="p-4 my-2 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800">
-                    <p className="font-medium text-lg">
-                        NOTE: <span className="font-semibold">Click on the title to view blog.</span>
-                    </p>
-                </div>
-            }
 
-            <div className=" p-5 m-2  border-amber-500 overflow-x-auto">
+            <div className="border-amber-500 my-5 overflow-x-auto">
                 {
                     isLoading ?
                         <Skeleton animation="wave" variant="rectangular" style={{ width: '100%', height: '200px' }} /> :
@@ -90,7 +111,7 @@ const Blog = () => {
                                     blogList.map((blog, index) => (
                                         <tr className="hover:bg-gray-100" key={blog._id}>
                                             <td className="px-4 py-2 border-b">{index + 1}</td>
-                                            <td className="px-4 py-2 border-b font-bold hover:text-blue-400 hover:cursor-pointer">
+                                            <td className="px-4 py-2 border-b font-bold  hover:cursor-pointer">
                                                 <Link to={`/blog/${blog._id}`} >
                                                     {blog.title}
                                                 </Link>
@@ -128,7 +149,17 @@ const Blog = () => {
                 }
             </div>
 
-
+            <ConfirmDialog
+                open={deleteDialog}
+                onClose={() => setDeleteDialog(false)}
+                title="Delete"
+                content="Are you sure want to delete this blog?"
+                action={
+                    <Button variant="contained" color="error" onClick={() => onDelete()}>
+                        Delete
+                    </Button>
+                }
+            />
 
         </div >
     )

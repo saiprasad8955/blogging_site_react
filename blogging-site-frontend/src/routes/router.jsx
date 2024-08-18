@@ -8,10 +8,11 @@ const SplashScreen = lazy(() => import('../pages/Splash-screen'));
 const HomePage = lazy(() => import("../pages/Home/HomePage"));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/auth/Register'));
-const Header = lazy(() => import("../pages/Header/Header"));
 const BlogPage = lazy(() => import("../pages/blogs/Blog"));
 const BlogForm = lazy(() => import("../pages/blogs/BlogForm"));
 const BlogView = lazy(() => import("../pages/blogs/BlogView"));
+const MainLayout = lazy(() => import("../layout/MainLayout"));
+const LoadingScreen = lazy(() => import("../pages/Loading-Screen"));
 
 const router = createBrowserRouter([
     {
@@ -23,12 +24,9 @@ const router = createBrowserRouter([
     {
         path: '/auth',
         element: (
-            <>
-                <Header />
-                <Suspense fallback={<SplashScreen />}>
-                    <Outlet />
-                </Suspense>
-            </>
+            <Suspense fallback={<SplashScreen />}>
+                <Outlet />
+            </Suspense>
         ),
         errorElement: <PageNotFound />,
         children: [
@@ -47,12 +45,13 @@ const router = createBrowserRouter([
     {
         path: '/home',
         element: (
-            <>
-                <Header />
-                <Suspense fallback={<SplashScreen />}>
-                    <Outlet />
-                </Suspense>
-            </>
+            <AuthGuard>
+                <MainLayout>
+                    <Suspense fallback={<LoadingScreen />}>
+                        <Outlet />
+                    </Suspense>
+                </MainLayout>
+            </AuthGuard>
         ),
         errorElement: <PageNotFound />,
         children: [
@@ -68,10 +67,11 @@ const router = createBrowserRouter([
         path: '/blog',
         element: (
             <AuthGuard>
-                <Header />
-                <Suspense fallback={<SplashScreen />}>
-                    <Outlet />
-                </Suspense>
+                <MainLayout>
+                    <Suspense fallback={<LoadingScreen />}>
+                        <Outlet />
+                    </Suspense>
+                </MainLayout>
             </AuthGuard>
         ),
         errorElement: <PageNotFound />,
