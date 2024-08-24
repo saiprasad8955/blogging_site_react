@@ -2,20 +2,23 @@
 import useSWR from 'swr';
 import { useParams } from 'react-router-dom';
 import { endpoints, fetcher } from '../../utils/axios';
-import { Button, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/Iconify';
 
 const BlogView = () => {
     const { id } = useParams();
+    console.log("🚀 ~ BlogView ~ id:", id)
 
     const URL = `${endpoints.blog.details}/${id}`;
 
+    console.log("🚀 ~ BlogView ~ URL:", URL)
     const { data, error, isLoading } = useSWR(URL, fetcher);
+    console.log("🚀 ~ BlogView ~ data:", data)
 
     const blog = data ? data.data : {};
+    console.log("🚀 ~ BlogView ~ blog:", blog)
 
     const renderBackButton = () => (
         <div className="mb-4">

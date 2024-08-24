@@ -2,7 +2,8 @@ import axios from 'axios';
 // config
 // ----------------------------------------------------------------------
 
-const axiosInstance = axios.create({ baseURL: window.location.origin });
+// const axiosInstance = axios.create({ baseURL: window.location.origin });
+const axiosInstance = axios.create({ baseURL: 'http://localhost:4000' });
 
 axiosInstance.interceptors.response.use(
     (res) => res,
@@ -34,6 +35,18 @@ export const endpoints = {
         list: '/getBlogs',
         update: '/UpdateBlogs',
         delete: '/deleteBlogsById',
-        details: '/deleteBlogsById'
+        details: '/blog'
+    },
+    user: {
+        list: '/user/list',
+        details: '/user/details',
+        update: '/user/update'
+    },
+    role: {
+        add: '/role/add',
+        update: '/role/update',
+        list: '/role/list',
+        details: '/role/details',
+        delete: '/role/delete'
     }
 };

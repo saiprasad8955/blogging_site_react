@@ -84,6 +84,9 @@ export default function AccountPopover() {
                     <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
                         {user?.email}
                     </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                        {user?.userType === 'ADMIN' ? user?.userType : user?.role?.name}
+                    </Typography>
                 </Box>
 
 

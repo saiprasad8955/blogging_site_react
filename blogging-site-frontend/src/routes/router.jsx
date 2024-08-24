@@ -14,10 +14,17 @@ const BlogView = lazy(() => import("../pages/blogs/BlogView"));
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const LoadingScreen = lazy(() => import("../pages/Loading-Screen"));
 
+// ADMIN PAGES 
+const UserManagement = lazy(() => import("../pages/user-managment/user-management"));
+const UserDetailsPage = lazy(() => import("../pages/user-managment/user-details"));
+const RoleManagement = lazy(() => import("../pages/role-management/role-management"));
+const RoleDetailsPage = lazy(() => import("../pages/role-management/role-details"));
+
+
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Navigate to='/home' />,
+        element: <Navigate to='/auth/login' />,
     },
 
     // AUTH ROUTES
@@ -45,7 +52,7 @@ const router = createBrowserRouter([
     {
         path: '/home',
         element: (
-            <AuthGuard>
+            <AuthGuard requiredRoles={['USER']}>
                 <MainLayout>
                     <Suspense fallback={<LoadingScreen />}>
                         <Outlet />
@@ -66,7 +73,7 @@ const router = createBrowserRouter([
     {
         path: '/blog',
         element: (
-            <AuthGuard>
+            <AuthGuard requiredRoles={['USER']}>
                 <MainLayout>
                     <Suspense fallback={<LoadingScreen />}>
                         <Outlet />
@@ -93,6 +100,54 @@ const router = createBrowserRouter([
                 element: <BlogView />
             }
         ]
+    },
+
+    // ADMIN ROUTES WITH ROLE PROTECTION
+    {
+        path: '/user-management',
+        element: (
+            <AuthGuard requiredRoles={['ADMIN']}>
+                <MainLayout>
+                    <Suspense fallback={<LoadingScreen />}>
+                        <Outlet />
+                    </Suspense>
+                </MainLayout>
+            </AuthGuard>
+        ),
+        children: [
+            {
+                index: true,
+                element: <UserManagement />
+            },
+            {
+                path: ':id',
+                element: <UserDetailsPage />
+            }
+        ],
+        errorElement: <PageNotFound />
+    },
+    {
+        path: '/role-management',
+        element: (
+            <AuthGuard requiredRoles={['ADMIN']}>
+                <MainLayout>
+                    <Suspense fallback={<LoadingScreen />}>
+                        <Outlet />
+                    </Suspense>
+                </MainLayout>
+            </AuthGuard>
+        ),
+        children: [
+            {
+                index: true,
+                element: <RoleManagement />
+            },
+            {
+                path: ':id',
+                element: <RoleDetailsPage />
+            }
+        ],
+        errorElement: <PageNotFound />
     },
 
     // 404 ROUTE

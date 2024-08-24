@@ -11,7 +11,7 @@ export default function BreadcrumbsLink({ link, activeLast, disabled }) {
   const styles = {
     typography: 'body2',
     alignItems: 'center',
-    color: 'text.primary',
+    // color: 'text.primary',
     display: 'inline-flex',
     ...(disabled &&
       !activeLast && {
@@ -42,7 +42,7 @@ export default function BreadcrumbsLink({ link, activeLast, disabled }) {
 
   if (link.href) {
     return (
-      <Link component={RouterLink} href={link.href} sx={{ ...styles, textDecoration: 'none', color: 'inherit' }}>
+      <Link component={RouterLink} href={link.href} sx={{ ...styles, textDecoration: 'none', color: 'inherit' }} className='hover:cursor-pointer  hover:underline hover:text-indigo-600' >
         {renderContent}
       </Link>
     );

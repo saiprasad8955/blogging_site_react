@@ -1,7 +1,8 @@
 
 import React from 'react'
 import Sidebar, { SidebarItem } from './Sidebar'
-import { BarChart2, BarChart3Icon, Boxes, FileBarChart2, LayoutDashboard, LifeBuoy, Receipt, Settings, UserCircle } from 'lucide-react'
+import { FileBarChart2, LayoutDashboard } from 'lucide-react'
+import useAuthContext from '../../auth/hook/use-context-hook';
 
 // Define a configuration array for the sidebar items
 const sidebarItems = [
@@ -9,34 +10,60 @@ const sidebarItems = [
         icon: <LayoutDashboard size={20} />,
         title: 'Home',
         path: '/home',
-        active: true, // You can manage active state dynamically if needed
-        alert: true   // Optional, if you have alert functionality
+        requiredPermissions: ['home.r'],
+        userTypes: ['USER'],
     },
     {
         icon: <FileBarChart2 size={20} />,
         title: 'Blog',
-        path: '/blog'
+        path: '/blog',
+        requiredPermissions: ['blog.r'], // Permissions needed for Blog
+        userTypes: ['USER'],
     },
     {
-        icon: <BarChart3Icon size={20} />,
-        title: 'Add Blog',
-        path: '/blog/add'
-    }
+        icon: <FileBarChart2 size={20} />,
+        title: 'User Management',
+        path: '/user-management',
+        requiredPermissions: [], // Assuming no specific permissions required beyond userType
+        userTypes: ['ADMIN'], // Only accessible to ADMIN
+    },
+    {
+        icon: <FileBarChart2 size={20} />,
+        title: 'Role Management',
+        path: '/role-management',
+        requiredPermissions: [], // Assuming no specific permissions required beyond userType
+        userTypes: ['ADMIN'], // Only accessible to ADMIN
+    },
 
-    // Add more items as needed
 ];
 
 const SidebarData = () => {
+
+    let { user } = useAuthContext();
+
+    // Helper function to check if the user has the required permissions
+    const hasPermission = (requiredPermissions) => {
+        if (!requiredPermissions || requiredPermissions.length === 0) return true;
+        return requiredPermissions.every(permission => {
+            const [section, action] = permission.split('.');
+            return user?.role?.permissions[section]?.[action];
+        });
+    };
+
+    // Filter sidebar items based on the user's permissions
+    const filteredItems = sidebarItems.filter(item =>
+        hasPermission(item.requiredPermissions) &&
+        item.userTypes.includes(user?.userType)
+    );
+
     return (
         <Sidebar>
-            {sidebarItems.map((item, index) => (
+            {filteredItems.map((item, index) => (
                 <SidebarItem
                     key={item.title + item.path}
                     icon={item.icon}
                     title={item.title}
                     path={item.path}
-                // active={item.active}
-                // alert={item.alert}
                 />
             ))}
         </Sidebar>

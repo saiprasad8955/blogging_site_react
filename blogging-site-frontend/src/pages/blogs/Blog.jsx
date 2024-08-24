@@ -77,7 +77,9 @@ const Blog = () => {
                         { name: 'List' },
                     ]}
                     action={
-                        <Button variant='contained' onClick={handleAdd} startIcon={<Iconify icon="mingcute:add-line" />} sx={{ borderRadius: '10px' }}  >Add Blog</Button>
+                        user?.role?.permissions?.blog?.c ?
+                            <Button variant='contained' onClick={handleAdd} startIcon={<Iconify icon="mingcute:add-line" />} sx={{ borderRadius: '10px' }}  >Add Blog</Button>
+                            : null
                     }
                     sx={{
                         mb: { xs: 3, md: 5 },
@@ -134,12 +136,18 @@ const Blog = () => {
                                                 />
                                             </td>
                                             <td className="px-4 py-2 border-b">
-                                                <IconButton onClick={() => handleUpdate(blog)} color='success'>
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton onClick={() => handleDelete(blog._id)} color='error'>
-                                                    <DeleteIcon />
-                                                </IconButton>
+                                                {
+                                                    user?.role?.permissions?.blog?.u &&
+                                                    <IconButton onClick={() => handleUpdate(blog)} color='success'>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                }
+                                                {
+                                                    user?.role?.permissions?.blog?.d &&
+                                                    <IconButton onClick={() => handleDelete(blog._id)} color='error'>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                }
                                             </td>
                                         </tr>
                                     ))

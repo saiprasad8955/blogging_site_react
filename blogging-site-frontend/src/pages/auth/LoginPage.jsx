@@ -52,9 +52,13 @@ const LoginPage = () => {
     setUserErr((prev) => ({ ...prev, password: false }));
 
     try {
-      await login?.(user.email, user.password);
+      const loggedInUser = await login?.(user.email, user.password);
+      if (loggedInUser && loggedInUser.userType === 'ADMIN') {
+        navigate('/user-management')
+      } else {
+        navigate('/home')
+      }
       enqueueSnackbar('Login success!')
-      navigate('/blog')
     } catch (err) {
       setLoading(false);
       enqueueSnackbar(err.error || 'Something went wrong!', { variant: 'error' });

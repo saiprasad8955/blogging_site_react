@@ -49,6 +49,7 @@ export function AuthProvider({ children }) {
 
     setSession(accessToken);
     setUser(user);
+    return user;
   }, []);
 
   // REGISTER
@@ -65,6 +66,7 @@ export function AuthProvider({ children }) {
 
     setSession(accessToken);
     setUser(user);
+    return user
   }, []);
 
   // LOGOUT
